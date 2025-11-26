@@ -1,0 +1,24 @@
+services:
+  # Web Service (Express + React)
+  - type: web
+    name: valueflow-app
+    runtime: node
+    plan: free
+    buildCommand: npm run install-all && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: PORT
+        value: 10000
+
+  # MongoDB Database (optional - you can also use MongoDB Atlas)
+  # If using MongoDB Atlas, comment out this section and use Atlas connection string
+  # - type: database
+  #   name: valueflow-db
+  #   databaseName: valueflow
+  #   plan: free
