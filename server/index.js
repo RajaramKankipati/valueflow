@@ -28,24 +28,6 @@ if (dbConnected) {
   console.log('🔓 Authentication disabled - running in local-only mode');
 }
 
-// Root route - API welcome page
-app.get('/', (req, res) => {
-  res.json({
-    name: 'ValueFlow API',
-    version: '1.0.0',
-    status: 'running',
-    database: dbConnected ? 'connected' : 'disconnected',
-    endpoints: {
-      health: '/api/health',
-      register: 'POST /api/users',
-      login: 'POST /api/users/login',
-      sync: 'POST /api/users/sync (requires auth)',
-      getData: 'GET /api/users/data (requires auth)'
-    },
-    message: 'API is working! Use the frontend at http://localhost:5173'
-  });
-});
-
 // API Routes
 app.get('/api/health', (req, res) => {
   res.json({
@@ -59,8 +41,28 @@ app.get('/api/health', (req, res) => {
 // Serve static files in production
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(join(__dirname, '../client/dist')));
+
+  // Catch-all route - must be last
   app.get('*', (req, res) => {
     res.sendFile(join(__dirname, '../client/dist/index.html'));
+  });
+} else {
+  // Development mode - show API info
+  app.get('/', (req, res) => {
+    res.json({
+      name: 'ValueFlow API',
+      version: '1.0.0',
+      status: 'running',
+      database: dbConnected ? 'connected' : 'disconnected',
+      endpoints: {
+        health: '/api/health',
+        register: 'POST /api/users',
+        login: 'POST /api/users/login',
+        sync: 'POST /api/users/sync (requires auth)',
+        getData: 'GET /api/users/data (requires auth)'
+      },
+      message: 'API is working! Use the frontend at http://localhost:5173'
+    });
   });
 }
 
